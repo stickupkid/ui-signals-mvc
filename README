@@ -1,0 +1,23 @@
+UI-Signals-MVC
+--------------
+
+This framework is a port of pureMVC[1] there are slight modifications, which include
+
+	1) The internal event bus is based on signals[2] for speed and performance.
+	2) Removal of all singletons, which in turn removes the need for multicore setup.
+
+You can interchange signal libraries, so you can use mine, Robert Penners[3] or Joa Eberts[4]. I've also included the StateMachine utility by default, a messaging system between cores is being devised.
+
+Known issues
+------------
+
+	1) This hasn't been tested in the wild.
+	2) No unit tests, these should be coming.
+	3) Missing comments and correct accreditation. This will come asap (sorry!).
+	
+Note: pureMVC.org is in no way related to this library/framework.	
+
+[1] http://www.puremvc.org
+[2] https://github.com/stickupkid/as3-signals
+[3] https://github.com/robertpenner/as3-signals
+[4] https://github.com/joa/as3-signals
