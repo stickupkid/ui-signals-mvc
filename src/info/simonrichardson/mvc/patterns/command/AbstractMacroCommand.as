@@ -7,7 +7,7 @@ package info.simonrichardson.mvc.patterns.command
 	import flash.utils.getQualifiedClassName;
 
 	/**
-	 * @author Simon Richardson - <simon@ustwo.co.uk>
+	 * @author Simon Richardson - me@simonrichardson.info
 	 */
 	public class AbstractMacroCommand extends SignalMap implements IMacroCommand
 	{
@@ -27,31 +27,39 @@ package info.simonrichardson.mvc.patterns.command
 			{
 				return;
 			}
-
-			if (valueClasses.length != command.valueClasses.length)
-			{
-				throw new ArgumentError('Invalid valueClasses arguments length');
-			}
 			
-			const commandValueClasses : Array = command.valueClasses;
-			for (var i:int = commandValueClasses.length; i--; )
+			if(null != valueClasses && null != valueClasses)
 			{
-				if (!(commandValueClasses[i] is Class))
+				if (valueClasses.length != command.valueClasses.length)
 				{
-					throw new ArgumentError('Invalid valueClasses argument: ' +
-						'item at index ' + i + ' should be a Class but was:<' +
-						commandValueClasses[i] + '>.' + getQualifiedClassName(commandValueClasses[i]));
+					throw new ArgumentError('Invalid valueClasses arguments length');
 				}
 				
-				const macroClassName : String = getQualifiedClassName(valueClasses[i]);
-				const commandClassName : String = getQualifiedClassName(commandValueClasses[i]);
-				if(macroClassName != commandClassName)
+				const commandValueClasses : Array = command.valueClasses;
+				for (var i:int = commandValueClasses.length; i--; )
 				{
-					throw new ArgumentError('Invalid valueClasses argument: ' +
-						'item at index ' + i + ' should be a ' +
-						macroClassName + ' but was:<' +
-						commandValueClasses[i] + '>.' + commandClassName);
+					if (!(commandValueClasses[i] is Class))
+					{
+						throw new ArgumentError('Invalid valueClasses argument: ' +
+							'item at index ' + i + ' should be a Class but was:<' +
+							commandValueClasses[i] + '>.' + getQualifiedClassName(commandValueClasses[i]));
+					}
+					
+					const macroClassName : String = getQualifiedClassName(valueClasses[i]);
+					const commandClassName : String = getQualifiedClassName(commandValueClasses[i]);
+					if(macroClassName != commandClassName)
+					{
+						throw new ArgumentError('Invalid valueClasses argument: ' +
+							'item at index ' + i + ' should be a ' +
+							macroClassName + ' but was:<' +
+							commandValueClasses[i] + '>.' + commandClassName);
+					}
 				}
+			}
+			else if((null == valueClasses && null != valueClasses) || 
+					(null != valueClasses && null == valueClasses))
+			{	
+				throw new ArgumentError('Invalid valueClasses arguments (mismatch)');
 			}
 			
 			_commands.push(command);
@@ -77,6 +85,7 @@ package info.simonrichardson.mvc.patterns.command
 			const total : int = _commands.length;
 			for(var i : int = 0; i<total; i++)
 			{
+				_commands[i].initialize(facade, view);
 				_commands[i].listener.apply(null, arguments);
 			}
 		}

@@ -15,52 +15,52 @@ package info.simonrichardson.mvc.patterns.facade
 	import org.osflash.signals.ISignal;
 
 	/**
-	 * @author Simon Richardson - <simon@ustwo.co.uk>
+	 * @author Simon Richardson - me@simonrichardson.info
 	 */
 	public class Facade implements IFacade
 	{
-		
+
 		protected var controller : IController;
-		
+
 		protected var model : IModel;
-		
+
 		protected var view : IView;
-		
+
 		public function Facade()
 		{
 			initFacade();
 		}
-		
+
 		private function initFacade() : void
 		{
 			initializeView();
 			initializeModel();
 			initializeController();
 		}
-		
+
 		protected function initializeView() : void
 		{
-			if(null != view)
+			if (null != view)
 			{
 				throw new NullReferenceError();
 			}
 			view = new View();
 			view.initialize(this);
 		}
-		
+
 		protected function initializeModel() : void
 		{
-			if(null != model)
+			if (null != model)
 			{
 				throw new NullReferenceError();
 			}
 			model = new Model();
 			model.initialize(this, view);
 		}
-		
+
 		protected function initializeController() : void
 		{
-			if(null != controller)
+			if (null != controller)
 			{
 				throw new NullReferenceError();
 			}
@@ -70,7 +70,7 @@ package info.simonrichardson.mvc.patterns.facade
 
 		public function registerProxy(proxy : IProxy) : void
 		{
-			if(null == model)
+			if (null == model)
 			{
 				throw new NullReferenceError();
 			}
@@ -79,7 +79,7 @@ package info.simonrichardson.mvc.patterns.facade
 
 		public function retrieveProxy(proxyName : String) : IProxy
 		{
-			if(null == model)
+			if (null == model)
 			{
 				throw new NullReferenceError();
 			}
@@ -88,7 +88,7 @@ package info.simonrichardson.mvc.patterns.facade
 
 		public function removeProxy(proxyName : String) : IProxy
 		{
-			if(null == model)
+			if (null == model)
 			{
 				throw new NullReferenceError();
 			}
@@ -97,7 +97,7 @@ package info.simonrichardson.mvc.patterns.facade
 
 		public function hasProxy(proxyName : String) : Boolean
 		{
-			if(null == model)
+			if (null == model)
 			{
 				throw new NullReferenceError();
 			}
@@ -106,7 +106,7 @@ package info.simonrichardson.mvc.patterns.facade
 
 		public function registerCommand(command : ICommand) : void
 		{
-			if(null == controller)
+			if (null == controller)
 			{
 				throw new NullReferenceError();
 			}
@@ -115,7 +115,7 @@ package info.simonrichardson.mvc.patterns.facade
 
 		public function removeCommand(command : ICommand) : void
 		{
-			if(null == controller)
+			if (null == controller)
 			{
 				throw new NullReferenceError();
 			}
@@ -124,7 +124,7 @@ package info.simonrichardson.mvc.patterns.facade
 
 		public function hasCommand(commandName : String) : Boolean
 		{
-			if(null == controller)
+			if (null == controller)
 			{
 				throw new NullReferenceError();
 			}
@@ -133,7 +133,7 @@ package info.simonrichardson.mvc.patterns.facade
 
 		public function registerMediator(mediator : IMediator) : void
 		{
-			if(null == view)
+			if (null == view)
 			{
 				throw new NullReferenceError();
 			}
@@ -142,7 +142,7 @@ package info.simonrichardson.mvc.patterns.facade
 
 		public function retrieveMediator(mediatorName : String) : IMediator
 		{
-			if(null == view)
+			if (null == view)
 			{
 				throw new NullReferenceError();
 			}
@@ -151,7 +151,7 @@ package info.simonrichardson.mvc.patterns.facade
 
 		public function removeMediator(mediatorName : String) : IMediator
 		{
-			if(null == view)
+			if (null == view)
 			{
 				throw new NullReferenceError();
 			}
@@ -160,7 +160,7 @@ package info.simonrichardson.mvc.patterns.facade
 
 		public function hasMediator(mediatorName : String) : Boolean
 		{
-			if(null == view)
+			if (null == view)
 			{
 				throw new NullReferenceError();
 			}
@@ -169,7 +169,7 @@ package info.simonrichardson.mvc.patterns.facade
 
 		public function getSignal(signalName : String) : ISignal
 		{
-			if(null == view)
+			if (null == view)
 			{
 				throw new NullReferenceError();
 			}
@@ -179,6 +179,11 @@ package info.simonrichardson.mvc.patterns.facade
 		public function get name() : String
 		{
 			return "Facade";
+		}
+
+		public function toString() : String
+		{
+			return "[Facade]";
 		}
 	}
 }

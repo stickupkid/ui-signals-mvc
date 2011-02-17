@@ -4,7 +4,7 @@ package info.simonrichardson.mvc.patterns.command
 	import info.simonrichardson.mvc.patterns.observer.SignalMap;
 
 	/**
-	 * @author Simon Richardson - <simon@ustwo.co.uk>
+	 * @author Simon Richardson - me@simonrichardson.info
 	 */
 	public class AbstractCommand extends SignalMap implements ICommand
 	{
@@ -26,6 +26,11 @@ package info.simonrichardson.mvc.patterns.command
 		public function get valueClasses() : Array
 		{
 			return null;
+		}
+
+		override public function toString() : String
+		{
+			return "[AbstractCommand]";
 		}
 	}
 }

@@ -3,7 +3,7 @@ package info.simonrichardson.mvc.utilities.statemachine
 	import info.simonrichardson.mvc.patterns.observer.Hook;
 
 	/**
-	 * @author Simon Richardson - <simon@ustwo.co.uk>
+	 * @author Simon Richardson - me@simonrichardson.info
 	 */
 	public final class StateMachineActionHook extends Hook
 	{

@@ -3,7 +3,7 @@ package info.simonrichardson.mvc
 	import info.simonrichardson.ui.display.UISprite;
 
 	/**
-	 * @author Simon Richardson - <simon@ustwo.co.uk>
+	 * @author Simon Richardson - me@simonrichardson.info
 	 */
 	public interface IMediator extends ISignalMap
 	{

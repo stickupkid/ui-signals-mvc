@@ -7,7 +7,7 @@ package info.simonrichardson.mvc.patterns.proxy
 	import org.osflash.signals.ISignal;
 
 	/**
-	 * @author Simon Richardson - <simon@ustwo.co.uk>
+	 * @author Simon Richardson - me@simonrichardson.info
 	 */
 	public class Proxy extends SignalMap implements IProxy
 	{
@@ -19,7 +19,7 @@ package info.simonrichardson.mvc.patterns.proxy
 		public function Proxy(name : String, data : IProxyVO = null)
 		{
 			super(name);
-			
+
 			_data = data;
 		}
 
@@ -52,7 +52,10 @@ package info.simonrichardson.mvc.patterns.proxy
 			_data = value;
 
 			const signal : ISignal = getSignal(DATA_CHANGED);
-			signal.dispatch(this, data);
+			if (null != signal)
+			{
+				signal.dispatch(this, data);
+			}
 		}
 	}
 }

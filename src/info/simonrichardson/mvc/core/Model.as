@@ -8,16 +8,16 @@ package info.simonrichardson.mvc.core
 	import flash.utils.Dictionary;
 
 	/**
-	 * @author Simon Richardson - <simon@ustwo.co.uk>
+	 * @author Simon Richardson - me@simonrichardson.info
 	 */
 	public class Model implements IModel
 	{
 
-		protected var view : IView;
+		protected var _view : IView;
 		
-		protected var facade : IFacade;
+		protected var _facade : IFacade;
 
-		protected var proxyMap : Dictionary;
+		protected var _proxyMap : Dictionary;
 
 		public function Model()
 		{
@@ -25,10 +25,10 @@ package info.simonrichardson.mvc.core
 
 		public function initialize(facade : IFacade, view : IView) : void
 		{
-			proxyMap = new Dictionary(true);
+			_proxyMap = new Dictionary(true);
 
-			this.view = view;
-			this.facade = facade;
+			_view = view;
+			_facade = facade;
 		}
 
 		public function registerProxy(proxy : IProxy) : void
@@ -38,24 +38,24 @@ package info.simonrichardson.mvc.core
 				removeProxy(proxy.name);
 			}
 
-			proxy.initialize(facade, view);
+			proxy.initialize(_facade, _view);
 
-			proxyMap[ proxy.name ] = proxy;
+			_proxyMap[ proxy.name ] = proxy;
 
 			proxy.onRegister();
 		}
 
 		public function retrieveProxy(proxyName : String) : IProxy
 		{
-			return proxyMap[ proxyName ];
+			return _proxyMap[ proxyName ];
 		}
 
 		public function removeProxy(proxyName : String) : IProxy
 		{
-			const proxy : IProxy = proxyMap[ proxyName ];
+			const proxy : IProxy = _proxyMap[ proxyName ];
 			if ( null != proxy )
 			{
-				delete proxyMap[ proxyName ];
+				delete _proxyMap[ proxyName ];
 				proxy.onRemove();
 			}
 
@@ -64,7 +64,7 @@ package info.simonrichardson.mvc.core
 
 		public function hasProxy(proxyName : String) : Boolean
 		{
-			return proxyMap[ proxyName ] != null;
+			return _proxyMap[ proxyName ] != null;
 		}
 	}
 }

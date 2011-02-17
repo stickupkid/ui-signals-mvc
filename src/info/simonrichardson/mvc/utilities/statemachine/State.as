@@ -5,9 +5,9 @@ package info.simonrichardson.mvc.utilities.statemachine
 	import flash.utils.Dictionary;
 
 	/**
-	 * @author Simon Richardson - <simon@ustwo.co.uk>
+	 * @author Simon Richardson - me@simonrichardson.info
 	 */
-	public class State implements IProxyVO
+	public final class State implements IProxyVO
 	{
 
 		private var _name : String;
@@ -27,7 +27,7 @@ package info.simonrichardson.mvc.utilities.statemachine
 			transitions = new Dictionary(true);
 		}
 
-		public function defineTrans(action : String, target : String) : void
+		public function defineTransition(action : String, target : String) : void
 		{
 			if ( getTarget(action) != null )
 			{
@@ -36,7 +36,7 @@ package info.simonrichardson.mvc.utilities.statemachine
 			transitions[ action ] = target;
 		}
 
-		public function removeTrans(action : String) : void
+		public function removeTransition(action : String) : void
 		{
 			transitions[ action ] = null;
 		}
@@ -52,12 +52,12 @@ package info.simonrichardson.mvc.utilities.statemachine
 			state.entering = entering;
 			state.exiting = exiting;
 			state.changed = changed;
-			
-			for each(var item : String in transitions)
+
+			for each (var item : String in transitions)
 			{
 				state.transitions[item] = transitions[item];
 			}
-			
+
 			return null;
 		}
 
@@ -68,7 +68,7 @@ package info.simonrichardson.mvc.utilities.statemachine
 
 		public function dispose() : void
 		{
-			for each(var item : String in transitions)
+			for each (var item : String in transitions)
 			{
 				delete transitions[item];
 			}
@@ -76,7 +76,7 @@ package info.simonrichardson.mvc.utilities.statemachine
 
 		public function toString() : String
 		{
-			return "State";
+			return "[State (name=" + name + ")]";
 		}
 	}
 }

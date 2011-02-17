@@ -3,7 +3,7 @@ package info.simonrichardson.mvc.patterns.observer
 	import info.simonrichardson.mvc.IHook;
 
 	/**
-	 * @author Simon Richardson - <simon@ustwo.co.uk>
+	 * @author Simon Richardson - me@simonrichardson.info
 	 */
 	public class Hook implements IHook
 	{

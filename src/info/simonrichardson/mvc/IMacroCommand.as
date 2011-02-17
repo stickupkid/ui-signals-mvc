@@ -1,7 +1,7 @@
 package info.simonrichardson.mvc
 {
 	/**
-	 * @author Simon Richardson - <simon@ustwo.co.uk>
+	 * @author Simon Richardson - me@simonrichardson.info
 	 */
 	public interface IMacroCommand extends ICommand
 	{

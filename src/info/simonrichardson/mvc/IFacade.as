@@ -1,7 +1,8 @@
 package info.simonrichardson.mvc
 {
+	import org.osflash.signals.ISignal;
 	/**
-	 * @author Simon Richardson - <simon@ustwo.co.uk>
+	 * @author Simon Richardson - me@simonrichardson.info
 	 */
 	public interface IFacade
 	{
@@ -27,5 +28,7 @@ package info.simonrichardson.mvc
 		function removeMediator(mediatorName : String) : IMediator;
 
 		function hasMediator(mediatorName : String) : Boolean;
+		
+		function getSignal(signalName : String) : ISignal;
 	}
 }

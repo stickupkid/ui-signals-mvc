@@ -11,16 +11,16 @@ package info.simonrichardson.mvc.core
 	import flash.utils.Dictionary;
 
 	/**
-	 * @author Simon Richardson - <simon@ustwo.co.uk>
+	 * @author Simon Richardson - me@simonrichardson.info
 	 */
 	public class View implements IView
 	{
 		
-		protected var facade : IFacade;
+		protected var _facade : IFacade;
 		
-		protected var signalMap : Dictionary;
+		protected var _signalMap : Dictionary;
 
-		protected var mediatorMap : Dictionary;
+		protected var _mediatorMap : Dictionary;
 
 		public function View()
 		{
@@ -28,17 +28,17 @@ package info.simonrichardson.mvc.core
 
 		public function initialize(facade : IFacade) : void
 		{
-			this.facade = facade;
+			this._facade = facade;
 			
-			signalMap = new Dictionary(true);
-			mediatorMap = new Dictionary(true);
+			_signalMap = new Dictionary();
+			_mediatorMap = new Dictionary();
 		}
 
 		public function addHook(hook : IHook) : void
 		{
 			var signal : Signal;
-
-			if (null == signalMap[hook.name])
+			
+			if (null == _signalMap[hook.name])
 			{
 				if (null == hook.valueClasses )
 				{
@@ -49,38 +49,38 @@ package info.simonrichardson.mvc.core
 					signal = new Signal(hook.valueClasses);
 				}
 
-				signalMap[hook.name] = signal;
+				_signalMap[hook.name] = signal;
 			}
 
-			signal = signalMap[hook.name];
+			signal = _signalMap[hook.name];
 			signal.add(hook.listener);
 		}
 
 		public function removeHook(hook : IHook) : void
 		{
-			if (null != signalMap[hook.name])
+			if (null != _signalMap[hook.name])
 			{
-				const signal : Signal = signalMap[hook.name];
+				const signal : Signal = _signalMap[hook.name];
 
 				signal.remove(hook.listener);
 
 				if (signal.numListeners == 0)
 				{
-					delete signalMap[hook.name];
+					delete _signalMap[hook.name];
 				}
 			}
 		}
 
 		public function getSignal(signalName : String) : ISignal
 		{
-			return signalMap[signalName];
+			return _signalMap[signalName];
 		}
 
 		public function registerMediator(mediator : IMediator) : void
 		{
-			mediator.initialize(facade, this);
+			mediator.initialize(_facade, this);
 
-			mediatorMap[mediator.name] = mediator;
+			_mediatorMap[mediator.name] = mediator;
 
 			const hooks : Vector.<IHook> = mediator.listSignalHooks();
 
@@ -98,12 +98,12 @@ package info.simonrichardson.mvc.core
 
 		public function retrieveMediator(mediatorName : String) : IMediator
 		{
-			return mediatorMap[ mediatorName ];
+			return _mediatorMap[ mediatorName ];
 		}
 
 		public function removeMediator(mediatorName : String) : IMediator
 		{
-			var mediator : IMediator = mediatorMap[ mediatorName ];
+			var mediator : IMediator = _mediatorMap[ mediatorName ];
 			if (null != mediator)
 			{
 				const hooks : Vector.<IHook> = mediator.listSignalHooks();
@@ -117,7 +117,7 @@ package info.simonrichardson.mvc.core
 					}
 				}
 
-				delete mediatorMap[mediatorName];
+				delete _mediatorMap[mediatorName];
 
 				mediator.onRemove();
 			}
@@ -127,7 +127,7 @@ package info.simonrichardson.mvc.core
 
 		public function hasMediator(mediatorName : String) : Boolean
 		{
-			return mediatorMap[ mediatorName ] != null;
+			return _mediatorMap[ mediatorName ] != null;
 		}
 
 		public function get name() : String

@@ -1,7 +1,5 @@
 package info.simonrichardson.mvc.utilities.statemachine
 {
-	import info.simonrichardson.mvc.IFacade;
-	import info.simonrichardson.mvc.IView;
 	import info.simonrichardson.mvc.patterns.proxy.Proxy;
 
 	import org.osflash.signals.ISignal;
@@ -9,9 +7,9 @@ package info.simonrichardson.mvc.utilities.statemachine
 	import flash.utils.Dictionary;
 
 	/**
-	 * @author Simon Richardson - <simon@ustwo.co.uk>
+	 * @author Simon Richardson - me@simonrichardson.info
 	 */
-	public class StateMachineProxy extends Proxy
+	public final class StateMachineProxy extends Proxy
 	{
 
 		protected var initial : State;
@@ -23,11 +21,6 @@ package info.simonrichardson.mvc.utilities.statemachine
 		public function StateMachineProxy(name : String)
 		{
 			super(name);
-		}
-
-		override public function initialize(facade : IFacade, view : IView) : void
-		{
-			super.initialize(facade, view);
 
 			_states = new Dictionary(true);
 		}
@@ -51,9 +44,9 @@ package info.simonrichardson.mvc.utilities.statemachine
 			{
 				return;
 			}
-			
+
 			_states[ state.name ] = state;
-			
+
 			if ( initial )
 			{
 				this.initial = state;
@@ -67,9 +60,9 @@ package info.simonrichardson.mvc.utilities.statemachine
 			{
 				return;
 			}
-			
+
 			state.dispose();
-			
+
 			_states[ stateName ] = null;
 		}
 
@@ -87,7 +80,10 @@ package info.simonrichardson.mvc.utilities.statemachine
 			if ( currentState && currentState.exiting )
 			{
 				signal = getSignal(currentState.exiting);
-				signal.dispatch(nextState.name);
+				if (null != signal)
+				{
+					signal.dispatch(nextState.name);
+				}
 
 				// sendNotification(currentState.exiting, data, nextState.name);
 			}
@@ -101,7 +97,10 @@ package info.simonrichardson.mvc.utilities.statemachine
 			if ( nextState.entering )
 			{
 				signal = getSignal(currentState.entering);
-				signal.dispatch();
+				if (null != signal)
+				{
+					signal.dispatch();
+				}
 
 				// sendNotification(nextState.entering, data);
 			}
@@ -115,12 +114,18 @@ package info.simonrichardson.mvc.utilities.statemachine
 			currentState = nextState;
 
 			signal = getSignal(StateMachineChangedHook.CHANGED);
-			signal.dispatch(currentState);
+			if (null != signal)
+			{
+				signal.dispatch(currentState);
+			}
 
 			if ( nextState.changed )
 			{
 				signal = getSignal(currentState.changed);
-				signal.dispatch();
+				if (null != signal)
+				{
+					signal.dispatch();
+				}
 
 				// sendNotification(currentState.changed, data);
 			}
@@ -149,6 +154,11 @@ package info.simonrichardson.mvc.utilities.statemachine
 		public function set currentState(state : State) : void
 		{
 			data = state;
+		}
+
+		override public function toString() : String
+		{
+			return "[StateMachineProxy]";
 		}
 	}
 }

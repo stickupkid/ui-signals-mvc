@@ -5,9 +5,9 @@ package info.simonrichardson.mvc.utilities.statemachine
 	import info.simonrichardson.mvc.patterns.mediator.Mediator;
 
 	/**
-	 * @author Simon Richardson - <simon@ustwo.co.uk>
+	 * @author Simon Richardson - me@simonrichardson.info
 	 */
-	public class StateMachineMediator extends Mediator
+	public final class StateMachineMediator extends Mediator
 	{
 
 		private var _proxy : StateMachineProxy;

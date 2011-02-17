@@ -8,19 +8,19 @@ package info.simonrichardson.mvc.patterns.mediator
 	import org.osflash.signals.ISignal;
 
 	/**
-	 * @author Simon Richardson - <simon@ustwo.co.uk>
+	 * @author Simon Richardson - me@simonrichardson.info
 	 */
 	public class Mediator extends SignalMap implements IMediator
 	{
-		
+
 		public static const VIEW_COMPONENT_CHANGED : String = "viewComponentChanged";
-		
+
 		protected var _viewComponent : UISprite;
 
 		public function Mediator(name : String, viewComponent : UISprite = null)
 		{
 			super(name);
-			
+
 			_viewComponent = viewComponent;
 		}
 
@@ -54,11 +54,19 @@ package info.simonrichardson.mvc.patterns.mediator
 				_viewComponent.dispose();
 				_viewComponent = null;
 			}
-			
+
 			_viewComponent = value;
-			
+
 			const signal : ISignal = getSignal(VIEW_COMPONENT_CHANGED);
-			signal.dispatch(this, viewComponent);
+			if (null != signal)
+			{
+				signal.dispatch(this, viewComponent);
+			}
+		}
+
+		override public function toString() : String
+		{
+			return "[Mediator]";
 		}
 	}
 }

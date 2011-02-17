@@ -8,57 +8,65 @@ package info.simonrichardson.mvc.core
 	import flash.utils.Dictionary;
 
 	/**
-	 * @author Simon Richardson - <simon@ustwo.co.uk>
+	 * @author Simon Richardson - me@simonrichardson.info
 	 */
 	public class Controller implements IController
 	{
 
-		protected var view : IView;
-		
-		protected var facade : IFacade;
+		protected var _view : IView;
 
-		protected var commandMap : Dictionary;
+		protected var _facade : IFacade;
+
+		protected var _commandMap : Dictionary;
 
 		public function Controller()
 		{
-			commandMap = new Dictionary(true);
+			_commandMap = new Dictionary(true);
 		}
 
 		public function initialize(facade : IFacade, view : IView) : void
 		{
-			this.view = view;
-			this.facade = facade;
+			_view = view;
+			_facade = facade;
 		}
 
 		public function registerCommand(command : ICommand) : void
 		{
-			if (command.valueClasses.length != command.listener.length)
+			if (null != command.valueClasses)
 			{
-				throw new ArgumentError('Invalid listener parameter length'); 
+				if (command.valueClasses.length != command.listener.length)
+				{
+					throw new ArgumentError('Invalid listener parameter length');
+				}
 			}
 			
-			command.initialize(facade, view);
-			
-			if ( commandMap[ command.name ] == null )
+			if(null == command.listener)
 			{
-				view.addHook(command);
+				throw new ArgumentError('Invalid listener');
 			}
-			
-			commandMap[ command.name ] = command;
+
+			command.initialize(_facade, _view);
+
+			if ( _commandMap[ command.name ] == null )
+			{
+				_view.addHook(command);
+			}
+
+			_commandMap[ command.name ] = command;
 		}
 
 		public function removeCommand(command : ICommand) : void
 		{
 			if ( hasCommand(command.name) )
 			{
-				view.removeHook(command);
-				commandMap[ command.name ] = null;
+				_view.removeHook(command);
+				_commandMap[ command.name ] = null;
 			}
 		}
 
 		public function hasCommand(commandName : String) : Boolean
 		{
-			return commandMap[ commandName ] != null;
+			return _commandMap[ commandName ] != null;
 		}
 	}
 }
