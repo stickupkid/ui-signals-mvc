@@ -1,10 +1,10 @@
 package info.simonrichardson.mvc.utilities.statemachine
 {
+	import info.simonrichardson.errors.ElementAlreadyExistsError;
+	import info.simonrichardson.errors.NullReferenceError;
 	import info.simonrichardson.mvc.patterns.proxy.Proxy;
 
 	import org.osflash.signals.ISignal;
-
-	import flash.utils.Dictionary;
 
 	/**
 	 * @author Simon Richardson - me@simonrichardson.info
@@ -14,7 +14,7 @@ package info.simonrichardson.mvc.utilities.statemachine
 
 		protected var initial : State;
 
-		private var _states : Dictionary;
+		private var _states : Vector.<State>;
 
 		private var _cancelled : Boolean;
 
@@ -22,116 +22,185 @@ package info.simonrichardson.mvc.utilities.statemachine
 		{
 			super(name);
 
-			_states = new Dictionary(true);
+			_cancelled = false;
+			_states = new Vector.<State>();
 		}
 
 		override public function onRegister() : void
 		{
 			if (null != initial)
 			{
-				transitionTo(initial);
+				transitionToState(initial);
 			}
 		}
 
-		public function retrieveState(name : String) : State
+		public function getStateByName(name : String) : State
 		{
-			return _states[ name ];
-		}
-
-		public function registerState(state : State, initial : Boolean = false) : void
-		{
-			if ( state == null || _states[ state.name ] != null )
+			var index : int = _states.length;
+			while (--index > -1)
 			{
-				return;
+				const state : State = _states[index];
+				if (state.name == name)
+				{
+					return state;
+				}
+			}
+			return null;
+		}
+
+		public function addState(state : State, initial : Boolean = false) : void
+		{
+			if ( null == state)
+			{
+				throw new ArgumentError("State can not be null");
 			}
 
-			_states[ state.name ] = state;
+			if (getStateByName(state.name) != null)
+			{
+				throw new ElementAlreadyExistsError();
+			}
+
+			_states.push(state);
 
 			if ( initial )
 			{
 				this.initial = state;
 			}
+
+			state.build();
 		}
 
-		public function removeState(stateName : String) : void
+		public function getStateAt(index : int) : State
 		{
-			const state : State = _states[ stateName ];
-			if ( state == null )
+			if (index < 0 || index >= _states.length)
+			{
+				throw new RangeError();
+			}
+
+			return _states[index];
+		}
+
+		public function getStateIndex(state : State) : int
+		{
+			return _states.indexOf(state);
+		}
+
+		public function removeState(state : State) : void
+		{
+			const index : int = getStateIndex(state);
+			if ( index == -1 )
 			{
 				return;
 			}
+
+			_states.splice(index, 1);
 
 			state.dispose();
-
-			_states[ stateName ] = null;
 		}
 
-		internal function transitionTo(nextState : State) : void
+		internal function transitionToState(nextState : State) : void
 		{
-			if ( nextState == null )
+			if (null == nextState)
+			{
+				throw new NullReferenceError();
+			}
+
+			if (cancelled || currentState == nextState)
 			{
 				return;
 			}
 
-			cancelled = false;
-
-			var signal : ISignal;
-
-			if ( currentState && currentState.exiting )
+			if (null != currentState)
 			{
-				signal = getSignal(currentState.exiting);
-				if (null != signal)
-				{
-					signal.dispatch(nextState.name);
-				}
-
-				// sendNotification(currentState.exiting, data, nextState.name);
-			}
-
-			if ( cancelled )
-			{
-				cancelled = false;
-				return;
-			}
-
-			if ( nextState.entering )
-			{
-				signal = getSignal(currentState.entering);
-				if (null != signal)
-				{
-					signal.dispatch();
-				}
-
-				// sendNotification(nextState.entering, data);
-			}
-
-			if ( cancelled )
-			{
-				cancelled = false;
-				return;
+				currentState.currentInternalState = null;
 			}
 
 			currentState = nextState;
 
+			var signal : ISignal;
 			signal = getSignal(StateMachineChangedHook.CHANGED);
 			if (null != signal)
 			{
-				signal.dispatch(currentState);
+				signal.dispatch();
 			}
 
-			if ( nextState.changed )
+			if (null != nextState.notification && nextState.notification != "")
 			{
-				signal = getSignal(currentState.changed);
+				signal = getSignal(nextState.notification);
 				if (null != signal)
 				{
 					signal.dispatch();
 				}
+			}
 
-				// sendNotification(currentState.changed, data);
+			_cancelled = false;
+
+			if (null != currentState.initial)
+			{
+				const internalState : InternalState = currentState.getInternalStateByName(currentState.initial);
+				if (null != internalState && currentState.currentInternalState == internalState)
+				{
+					signal = getSignal(StateMachineChangedHook.CHANGED);
+					if (null != signal)
+					{
+						signal.dispatch();
+					}
+
+					if (null != internalState.notification && internalState.notification != "")
+					{
+						signal = getSignal(internalState.notification);
+						if (null != signal)
+						{
+							signal.dispatch();
+						}
+					}
+				}
+				else
+				{
+					transitionToInternalState(internalState);
+				}
 			}
 		}
 
-		internal function get states() : Dictionary
+		internal function transitionToInternalState(nextInternalState : InternalState) : void
+		{
+			if (null == nextInternalState)
+			{
+				throw new NullReferenceError();
+			}
+
+			if (cancelled)
+			{
+				return;
+			}
+
+			if (currentState.currentInternalState == nextInternalState)
+			{
+				return;
+			}
+
+			currentState.currentInternalState = nextInternalState;
+
+			var signal : ISignal;
+			signal = getSignal(StateMachineChangedHook.CHANGED);
+			if (null != signal)
+			{
+				signal.dispatch();
+			}
+
+			if (null != nextInternalState.notification && nextInternalState.notification != "")
+			{
+				signal = getSignal(nextInternalState.notification);
+				if (null != signal)
+				{
+					signal.dispatch();
+				}
+			}
+
+			_cancelled = false;
+		}
+
+		internal function get states() : Vector.<State>
 		{
 			return _states;
 		}

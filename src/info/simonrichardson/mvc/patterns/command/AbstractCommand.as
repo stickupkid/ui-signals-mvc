@@ -9,9 +9,9 @@ package info.simonrichardson.mvc.patterns.command
 	public class AbstractCommand extends SignalMap implements ICommand
 	{
 
-		public function AbstractCommand(name : String)
+		public function AbstractCommand(notification : String)
 		{
-			super(name);
+			super(notification);
 		}
 
 		protected function execute() : void
@@ -30,7 +30,7 @@ package info.simonrichardson.mvc.patterns.command
 
 		override public function toString() : String
 		{
-			return "[AbstractCommand]";
+			return "[AbstractCommand (notification=" + name + "]";
 		}
 	}
 }

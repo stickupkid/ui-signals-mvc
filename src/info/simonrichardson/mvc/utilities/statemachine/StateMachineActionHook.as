@@ -9,6 +9,10 @@ package info.simonrichardson.mvc.utilities.statemachine
 	{
 
 		public static const ACTION : String = "stateMachine/hooks/action";
+		
+		public static const NEXT_STATE : String = "stateMachine/notifications/nextState";
+		
+		public static const NEXT_INTERNAL_STATE : String = "stateMachine/notifications/nextInternalState";
 
 		public function StateMachineActionHook(listener : Function)
 		{
